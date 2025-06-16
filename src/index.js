@@ -33,7 +33,7 @@ export default {
         const url = new URL(request.url);
         const domain = url.hostname;
 
-        if (domain === "redirect.gordonbeeming.com") {
+        if (domain === "redirect.gordonbeeming.com" || domain === "www.gordonbeeming.com") {
             return new Response(null, {
                 status: 301,
                 headers: { 'Location': 'https://gordonbeeming.com/' }
@@ -59,6 +59,9 @@ export default {
 
         let csp = "";
         if (domain === "preview.gordonbeeming.com") {
+            csp = "default-src 'self'; script-src 'self' 'unsafe-inline' static.cloudflareinsights.com giscus.app cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' cdn.jsdelivr.net; img-src 'self' data:; font-src 'self' cdn.jsdelivr.net; object-src 'none'; frame-src giscus.app; worker-src 'self' blob:; frame-ancestors 'none'; sandbox allow-forms allow-same-origin allow-scripts allow-top-navigation-by-user-activation; base-uri 'self';";
+        }
+        else if (domain === "gordonbeeming.com") {
             csp = "default-src 'self'; script-src 'self' 'unsafe-inline' static.cloudflareinsights.com giscus.app cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' cdn.jsdelivr.net; img-src 'self' data:; font-src 'self' cdn.jsdelivr.net; object-src 'none'; frame-src giscus.app; worker-src 'self' blob:; frame-ancestors 'none'; sandbox allow-forms allow-same-origin allow-scripts allow-top-navigation-by-user-activation; base-uri 'self';";
         }
         if (csp.length > 0) {
