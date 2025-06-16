@@ -58,7 +58,7 @@ export default {
 
         let csp = "";
         if (domain === "preview.gordonbeeming.com") {
-            csp = "default-src 'self'; object-src 'none'; frame-ancestors 'none'; sandbox allow-forms allow-same-origin allow-scripts; base-uri 'self';";
+            csp = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; object-src 'none'; frame-ancestors 'none'; sandbox allow-forms allow-same-origin allow-scripts; base-uri 'self';";
         }
         if (csp.length > 0) {
             newHeaders.set("Content-Security-Policy", csp);
