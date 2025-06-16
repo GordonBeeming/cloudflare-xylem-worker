@@ -1,0 +1,12 @@
+# wrangler.toml
+
+name = "cloudflare-xylem-worker"
+main = "src/index.js"
+compatibility_date = "2025-06-16"
+account_id = "27d8c1d79794dc980082545da44808c2"
+
+[build]
+upload.format = "modules"
+
+[observability.logs]
+enabled = true
