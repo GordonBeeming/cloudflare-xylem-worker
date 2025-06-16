@@ -58,7 +58,7 @@ export default {
 
         let csp = "";
         if (domain === "preview.gordonbeeming.com") {
-            csp = "default-src 'self'; script-src 'self' 'unsafe-inline' static.cloudflareinsights.com giscus.app cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; frame-ancestors 'none'; sandbox allow-forms allow-same-origin allow-scripts; base-uri 'self';";
+            csp = "default-src 'self'; script-src 'self' 'unsafe-inline' static.cloudflareinsights.com giscus.app cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' cdn.jsdelivr.net; img-src 'self' data:; object-src 'none'; frame-ancestors 'none'; sandbox allow-forms allow-same-origin allow-scripts; base-uri 'self';";
         }
         if (csp.length > 0) {
             newHeaders.set("Content-Security-Policy", csp);
