@@ -73,6 +73,10 @@ export default {
         newHeaders.set("Feature-Policy", featurePolicy);
         newHeaders.set("Permissions-Policy", featurePolicy);
 
+        if (response.status === 404) {
+            console.warn(`404 Not Found: ${request.url}`);
+        }
+
         return new Response(response.body, {
             status: response.status,
             statusText: response.statusText,

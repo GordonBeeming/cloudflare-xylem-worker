@@ -1,0 +1,26 @@
+{
+  // The name of your worker.
+  "name": "cloudflare-xylem-worker",
+  // The main entry point for your worker.
+  "main": "src/index.js",
+  // The compatibility date for the worker.
+  "compatibility_date": "2025-06-16",
+  // The ID of the account to which the worker should be deployed.
+  "account_id": "27d8c1d79794dc980082545da44808c2",
+  // Build configuration.
+  "build": {
+    "upload": {
+      // The format of the uploaded worker.
+      "format": "modules"
+    }
+  },
+  // Observability settings for your worker.
+  "observability": {
+    "logs": {
+      // The sampling rate for head logs.
+      "head_sampling_rate": 0.01,
+      // Enables or disables logging.
+      "enabled": true
+    }
+  }
+}
