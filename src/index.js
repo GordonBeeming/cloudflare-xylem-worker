@@ -59,7 +59,7 @@ export default {
 
         let csp = "";
         if (domain === "preview.gordonbeeming.com") {
-            csp = "default-src 'self'; script-src 'self' 'unsafe-inline' static.cloudflareinsights.com giscus.app cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' cdn.jsdelivr.net; img-src 'self' data:; font-src 'self' cdn.jsdelivr.net; object-src 'none'; frame-src www.youtube.com giscus.app; worker-src 'self' blob:; frame-ancestors 'none'; sandbox allow-forms allow-same-origin allow-scripts allow-top-navigation-by-user-activation; base-uri 'self';";
+            csp = "default-src 'self'; script-src 'self' 'unsafe-inline' static.cloudflareinsights.com giscus.app cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' cdn.jsdelivr.net; img-src 'self' data:; font-src 'self' cdn.jsdelivr.net; object-src 'none'; frame-src www.youtube.com giscus.app; worker-src 'self' blob:; frame-ancestors 'none'; sandbox allow-forms allow-same-origin allow-scripts allow-top-navigation-by-user-activation allow-popups; base-uri 'self';";
         }
         else if (domain === "gordonbeeming.com") {
             csp = "default-src 'self'; script-src 'self' 'unsafe-inline' static.cloudflareinsights.com giscus.app cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' cdn.jsdelivr.net; img-src 'self' data:; font-src 'self' cdn.jsdelivr.net; object-src 'none'; frame-src www.youtube.com giscus.app; worker-src 'self' blob:; frame-ancestors 'none'; sandbox allow-forms allow-same-origin allow-scripts allow-top-navigation-by-user-activation allow-popups; base-uri 'self';";
