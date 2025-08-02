@@ -16,7 +16,6 @@ const removeHeaders = [
     "Public-Key-Pins",
     "X-Powered-By",
     "X-AspNet-Version",
-    "Accept-Encoding",
     "Content-Encoding",
 ];
 
@@ -28,7 +27,9 @@ export default {
      * @returns {Promise<Response>}
      */
     async fetch(request, env, ctx) {
-        let response = await fetch(request);
+        const newRequest = new Request(request);
+        newRequest.headers.delete("Accept-Encoding");
+        let response = await fetch(newRequest);
 
         const url = new URL(request.url);
         const domain = url.hostname;
@@ -58,7 +59,6 @@ export default {
             newHeaders.delete(headerName);
         }
 
-        // --- NEW: Apply a dynamic CSP to the main and preview domains ---
         if (domain === "preview.gordonbeeming.com" || domain === "gordonbeeming.com") {
             let csp;
             let nonce = null;
@@ -76,7 +76,6 @@ export default {
             ];
 
             if (contentType.includes("text/html")) {
-                // For HTML, generate a nonce and a strict dynamic policy
                 nonce = crypto.randomUUID();
                 csp = [
                     ...baseCspParts,
@@ -84,7 +83,6 @@ export default {
                     `style-src 'nonce-${nonce}' 'self' cdn.jsdelivr.net;`,
                 ].join(' ');
             } else {
-                // For non-HTML, create a static policy without a nonce or 'unsafe-inline'
                 csp = [
                     ...baseCspParts,
                     "script-src 'self' static.cloudflareinsights.com giscus.app cdn.jsdelivr.net;",
@@ -95,7 +93,6 @@ export default {
             newHeaders.set("Content-Security-Policy", csp);
             newHeaders.set("X-Content-Security-Policy", csp);
 
-            // If a nonce was created, it's an HTML page that needs rewriting
             if (nonce) {
                 const rewriter = new HTMLRewriter()
                     .on('script', {
