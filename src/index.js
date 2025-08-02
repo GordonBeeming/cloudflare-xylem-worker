@@ -88,13 +88,13 @@ export default {
                 csp = [
                     ...baseCspParts,
                     `script-src 'nonce-${nonce}' 'strict-dynamic' static.cloudflareinsights.com giscus.app cdn.jsdelivr.net;`,
-                    `style-src 'nonce-${nonce}' 'self' 'unsafe-inline' cdn.jsdelivr.net;`,
+                    `style-src 'self' 'unsafe-inline' cdn.jsdelivr.net;`,
                 ].join(' ');
             } else {
                 csp = [
                     ...baseCspParts,
                     "script-src 'self' static.cloudflareinsights.com giscus.app cdn.jsdelivr.net;",
-                    "style-src 'self' cdn.jsdelivr.net;",
+                    "style-src 'self' 'unsafe-inline' cdn.jsdelivr.net;",
                 ].join(' ');
             }
             
