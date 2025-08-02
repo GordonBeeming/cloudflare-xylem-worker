@@ -41,6 +41,7 @@ export default {
         }
 
         let newHeaders = new Headers(response.headers);
+        const contentType = newHeaders.get("Content-Type") || "";
 
         for (const [name, value] of Object.entries(securityHeaders)) {
             if ((domain === "iframe.gordonbeeming.com") && name === "X-Frame-Options") {
@@ -57,16 +58,65 @@ export default {
             newHeaders.delete(headerName);
         }
 
-        let csp = "";
-        if (domain === "preview.gordonbeeming.com") {
-            csp = "default-src 'self'; script-src 'self' 'unsafe-inline' static.cloudflareinsights.com giscus.app cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' cdn.jsdelivr.net; img-src 'self' data:; font-src 'self' cdn.jsdelivr.net; object-src 'none'; frame-src www.youtube.com giscus.app; worker-src 'self' blob:; frame-ancestors 'none'; sandbox allow-forms allow-same-origin allow-scripts allow-top-navigation-by-user-activation allow-popups; base-uri 'self';";
-        }
-        else if (domain === "gordonbeeming.com") {
-            csp = "default-src 'self'; script-src 'self' 'unsafe-inline' static.cloudflareinsights.com giscus.app cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' cdn.jsdelivr.net; img-src 'self' data:; font-src 'self' cdn.jsdelivr.net; object-src 'none'; frame-src www.youtube.com giscus.app; worker-src 'self' blob:; frame-ancestors 'none'; sandbox allow-forms allow-same-origin allow-scripts allow-top-navigation-by-user-activation allow-popups; base-uri 'self';";
-        }
-        if (csp.length > 0) {
+        // --- NEW: Apply a dynamic CSP to the main and preview domains ---
+        if (domain === "preview.gordonbeeming.com" || domain === "gordonbeeming.com") {
+            let csp;
+            let nonce = null;
+
+            const baseCspParts = [
+                "default-src 'self';",
+                "img-src 'self' data:;",
+                "font-src 'self' cdn.jsdelivr.net;",
+                "object-src 'none';",
+                "frame-src www.youtube.com giscus.app;",
+                "worker-src 'self' blob:;",
+                "frame-ancestors 'none';",
+                "sandbox allow-forms allow-same-origin allow-scripts allow-top-navigation-by-user-activation allow-popups;",
+                "base-uri 'self';"
+            ];
+
+            if (contentType.includes("text/html")) {
+                // For HTML, generate a nonce and a strict dynamic policy
+                nonce = crypto.randomUUID();
+                csp = [
+                    ...baseCspParts,
+                    `script-src 'nonce-${nonce}' 'strict-dynamic' static.cloudflareinsights.com giscus.app cdn.jsdelivr.net;`,
+                    `style-src 'nonce-${nonce}' 'self' cdn.jsdelivr.net;`,
+                ].join(' ');
+            } else {
+                // For non-HTML, create a static policy without a nonce or 'unsafe-inline'
+                csp = [
+                    ...baseCspParts,
+                    "script-src 'self' static.cloudflareinsights.com giscus.app cdn.jsdelivr.net;",
+                    "style-src 'self' cdn.jsdelivr.net;",
+                ].join(' ');
+            }
+            
             newHeaders.set("Content-Security-Policy", csp);
             newHeaders.set("X-Content-Security-Policy", csp);
+
+            // If a nonce was created, it's an HTML page that needs rewriting
+            if (nonce) {
+                const rewriter = new HTMLRewriter()
+                    .on('script', {
+                        element(element) {
+                            element.setAttribute('nonce', nonce);
+                        },
+                    })
+                    .on('style', {
+                        element(element) {
+                            element.setAttribute('nonce', nonce);
+                        },
+                    });
+
+                const transformedResponse = rewriter.transform(response);
+
+                return new Response(transformedResponse.body, {
+                    status: response.status,
+                    statusText: response.statusText,
+                    headers: newHeaders
+                });
+            }
         }
 
         const featurePolicy = "accelerometer 'none'; camera 'none'; geolocation 'none'; gyroscope 'none'; magnetometer 'none'; microphone 'none'; payment 'none'; usb 'none'";
