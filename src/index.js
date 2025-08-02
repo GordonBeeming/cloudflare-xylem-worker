@@ -44,6 +44,13 @@ export default {
         let newHeaders = new Headers(response.headers);
         newHeaders.set("X-Origin-Content-Encoding", response.headers.get("Content-Encoding") || "none");
         const contentType = newHeaders.get("Content-Type") || "";
+        
+        // --- NEW DEBUG STEP: Check if the body is readable ---
+        // A response body can only be read once, so we must clone it first.
+        if (contentType.includes("text/html")) {
+            const body = await response.clone().text();
+            newHeaders.set("X-Debug-Body-Length", body.length);
+        }
 
         for (const [name, value] of Object.entries(securityHeaders)) {
             if ((domain === "iframe.gordonbeeming.com") && name === "X-Frame-Options") {
