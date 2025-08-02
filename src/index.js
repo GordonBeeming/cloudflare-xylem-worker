@@ -42,6 +42,7 @@ export default {
         }
 
         let newHeaders = new Headers(response.headers);
+        newHeaders.set("X-Origin-Content-Encoding", response.headers.get("Content-Encoding") || "none");
         const contentType = newHeaders.get("Content-Type") || "";
 
         for (const [name, value] of Object.entries(securityHeaders)) {
