@@ -79,7 +79,7 @@ export default {
                 "frame-src www.youtube.com giscus.app;",
                 "worker-src 'self' blob:;",
                 "frame-ancestors 'none';",
-                "sandbox allow-forms allow-same-origin allow-scripts allow-top-navigation-by-user-activation allow-popups;",
+                "sandbox allow-forms allow-same-origin allow-scripts allow-top-navigation-by-user-activation allow-popups allow-popups-to-escape-sandbox;",
                 "base-uri 'self';"
             ];
 
