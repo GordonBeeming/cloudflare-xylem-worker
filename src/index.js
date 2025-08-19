@@ -42,6 +42,9 @@ export default {
         }
 
         let newHeaders = new Headers(response.headers);
+        newHeaders.set("Feature-Policy", "accelerometer 'none'; camera 'none'; geolocation 'none'; gyroscope 'none'; magnetometer 'none'; microphone 'none'; payment 'none'; usb 'none'");
+        newHeaders.set("Permissions-Policy", "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()");
+
         newHeaders.set("X-Origin-Content-Encoding", response.headers.get("Content-Encoding") || "none");
         const contentType = newHeaders.get("Content-Type") || "";
         
@@ -123,9 +126,6 @@ export default {
                 });
             }
         }
-
-        newHeaders.set("Feature-Policy", "accelerometer 'none'; camera 'none'; geolocation 'none'; gyroscope 'none'; magnetometer 'none'; microphone 'none'; payment 'none'; usb 'none'");
-        newHeaders.set("Permissions-Policy", "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()");
 
         if (response.status === 404) {
             console.warn(`404 Not Found: ${request.url}`);
