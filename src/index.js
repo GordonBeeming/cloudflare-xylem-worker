@@ -124,9 +124,8 @@ export default {
             }
         }
 
-        const featurePolicy = "accelerometer 'none'; camera 'none'; geolocation 'none'; gyroscope 'none'; magnetometer 'none'; microphone 'none'; payment 'none'; usb 'none'";
-        newHeaders.set("Feature-Policy", featurePolicy);
-        newHeaders.set("Permissions-Policy", featurePolicy);
+        newHeaders.set("Feature-Policy", "accelerometer 'none'; camera 'none'; geolocation 'none'; gyroscope 'none'; magnetometer 'none'; microphone 'none'; payment 'none'; usb 'none'");
+        newHeaders.set("Permissions-Policy", "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()");
 
         if (response.status === 404) {
             console.warn(`404 Not Found: ${request.url}`);
