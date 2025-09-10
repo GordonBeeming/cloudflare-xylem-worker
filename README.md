@@ -16,4 +16,3 @@ This worker is designed to be deployed via Cloudflare's GitHub integration. Ensu
 - Applies a Content Security Policy for `*gordonbeeming.com/*`.
 - Applies a Feature-Policy.
 - Skips header modifications for non-HTML content.
-
