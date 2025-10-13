@@ -131,14 +131,15 @@ export default {
 
             const baseCspParts = [
                 "default-src 'self';",
-                "img-src 'self' data:;",
+                "img-src 'self' data: assets.tina.io;",
                 "font-src 'self';",
                 "object-src 'none';",
                 "frame-src 'none';",
                 "worker-src 'self' blob:;",
                 "frame-ancestors 'self';",
                 "sandbox allow-forms allow-same-origin allow-scripts allow-top-navigation-by-user-activation allow-popups allow-popups-to-escape-sandbox;",
-                "base-uri 'self';"
+                "base-uri 'self';",
+                "connect-src 'self' identity.tinajs.io content.tinajs.io assets.tinajs.io;"
             ];
 
             if (contentType.includes("text/html")) {
