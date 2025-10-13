@@ -56,10 +56,7 @@ export default {
         }
 
         for (const [name, value] of Object.entries(securityHeaders)) {
-            if (
-                (domain === "iframe.gordonbeeming.com" ||
-                domain === "recipes.gordonbeeming.com"
-                ) && name === "X-Frame-Options") {
+            if ((domain === "iframe.gordonbeeming.com") && name === "X-Frame-Options") {
                 continue;
             }
             newHeaders.set(name, value);
@@ -84,7 +81,7 @@ export default {
                 "object-src 'none';",
                 "frame-src www.youtube.com giscus.app;",
                 "worker-src 'self' blob:;",
-                "frame-ancestors 'none';",
+                "frame-ancestors 'self';",
                 "sandbox allow-forms allow-same-origin allow-scripts allow-top-navigation-by-user-activation allow-popups allow-popups-to-escape-sandbox;",
                 "base-uri 'self';"
             ];
