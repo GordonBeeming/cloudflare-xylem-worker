@@ -132,7 +132,7 @@ export default {
             const baseCspParts = [
                 "default-src 'self';",
                 "img-src 'self' data: assets.tina.io;",
-                "font-src 'self';",
+                "font-src 'self' data:;",
                 "object-src 'none';",
                 "frame-src 'none';",
                 "worker-src 'self' blob:;",
