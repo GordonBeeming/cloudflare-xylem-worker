@@ -132,9 +132,9 @@ export default {
             const baseCspParts = [
                 "default-src 'self';",
                 "img-src 'self' data: assets.tina.io;",
-                "font-src 'self' data:;",
+                "font-src 'self' data: fonts.googleapis.com fonts.gstatic.com;",
                 "object-src 'none';",
-                "frame-src 'none';",
+                "frame-src 'self';",
                 "worker-src 'self' blob:;",
                 "frame-ancestors 'self';",
                 "sandbox allow-forms allow-same-origin allow-scripts allow-top-navigation-by-user-activation allow-popups allow-popups-to-escape-sandbox;",
@@ -147,13 +147,13 @@ export default {
                 csp = [
                     ...baseCspParts,
                     `script-src 'nonce-${nonce}' 'strict-dynamic' static.cloudflareinsights.com;`,
-                    `style-src 'self' 'unsafe-inline';`,
+                    `style-src 'self' 'unsafe-inline' fonts.googleapis.com;`,
                 ].join(' ');
             } else {
                 csp = [
                     ...baseCspParts,
                     "script-src 'self' static.cloudflareinsights.com;",
-                    "style-src 'self' 'unsafe-inline';",
+                    "style-src 'self' 'unsafe-inline' fonts.googleapis.com;",
                 ].join(' ');
             }
             
