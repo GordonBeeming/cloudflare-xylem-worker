@@ -81,7 +81,7 @@ export default {
                 "object-src 'none';",
                 "frame-src www.youtube.com giscus.app;",
                 "worker-src 'self' blob:;",
-                "frame-ancestors 'self';",
+                "frame-ancestors 'none';",
                 "sandbox allow-forms allow-same-origin allow-scripts allow-top-navigation-by-user-activation allow-popups allow-popups-to-escape-sandbox;",
                 "base-uri 'self';"
             ];
@@ -98,6 +98,61 @@ export default {
                     ...baseCspParts,
                     "script-src 'self' static.cloudflareinsights.com giscus.app cdn.jsdelivr.net;",
                     "style-src 'self' 'unsafe-inline' cdn.jsdelivr.net;",
+                ].join(' ');
+            }
+            
+            newHeaders.set("Content-Security-Policy", csp);
+            newHeaders.set("X-Content-Security-Policy", csp);
+
+            if (nonce) {
+                const rewriter = new HTMLRewriter()
+                    .on('script', {
+                        element(element) {
+                            element.setAttribute('nonce', nonce);
+                        },
+                    })
+                    .on('style', {
+                        element(element) {
+                            element.setAttribute('nonce', nonce);
+                        },
+                    });
+
+                const transformedResponse = rewriter.transform(response);
+
+                return new Response(transformedResponse.body, {
+                    status: response.status,
+                    statusText: response.statusText,
+                    headers: newHeaders
+                });
+            }
+        } else if (domain === "recipes.gordonbeeming.com") {
+            let csp;
+            let nonce = null;
+
+            const baseCspParts = [
+                "default-src 'self';",
+                "img-src 'self' data:;",
+                "font-src 'self';",
+                "object-src 'none';",
+                "frame-src 'none';",
+                "worker-src 'self' blob:;",
+                "frame-ancestors 'self';",
+                "sandbox allow-forms allow-same-origin allow-scripts allow-top-navigation-by-user-activation allow-popups allow-popups-to-escape-sandbox;",
+                "base-uri 'self';"
+            ];
+
+            if (contentType.includes("text/html")) {
+                nonce = crypto.randomUUID();
+                csp = [
+                    ...baseCspParts,
+                    `script-src 'nonce-${nonce}' 'strict-dynamic' static.cloudflareinsights.com;`,
+                    `style-src 'self' 'unsafe-inline';`,
+                ].join(' ');
+            } else {
+                csp = [
+                    ...baseCspParts,
+                    "script-src 'self' static.cloudflareinsights.com;",
+                    "style-src 'self' 'unsafe-inline';",
                 ].join(' ');
             }
             
