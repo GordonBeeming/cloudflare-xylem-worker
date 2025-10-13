@@ -56,7 +56,10 @@ export default {
         }
 
         for (const [name, value] of Object.entries(securityHeaders)) {
-            if ((domain === "iframe.gordonbeeming.com") && name === "X-Frame-Options") {
+            if (
+                (domain === "iframe.gordonbeeming.com" ||
+                domain === "recipes.gordonbeeming.com"
+                ) && name === "X-Frame-Options") {
                 continue;
             }
             newHeaders.set(name, value);
