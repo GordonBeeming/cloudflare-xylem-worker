@@ -27,12 +27,9 @@ export default {
      * @returns {Promise<Response>}
      */
     async fetch(request, env, ctx) {
-        const newRequest = new Request(request);
-        newRequest.headers.delete("Accept-Encoding");
-        let response = await fetch(newRequest);
-
         const url = new URL(request.url);
         const domain = url.hostname;
+        const path = url.pathname;
 
         if (domain === "redirect.gordonbeeming.com" || domain === "www.gordonbeeming.com") {
             return new Response(null, {
@@ -40,6 +37,39 @@ export default {
                 headers: { 'Location': 'https://gordonbeeming.com/' }
             });
         }
+
+        if (domain === "hardphasetracker.gordonbeeming.com" && path === "/") {
+            return new Response(null, {
+                status: 301,
+                headers: { 'Location': 'https://gordonbeeming.com/hardphasetracker' }
+            });
+        }
+
+        if (domain === "copilot_here.gordonbeeming.com" && path === "/") {
+            return new Response(null, {
+                status: 301,
+                headers: { 'Location': 'https://gordonbeeming.com/copilot_here' }
+            });
+        }
+
+        let fetchUrl = request.url;
+        if (domain === "gordonbeeming.com") {
+            if (path === "/hardphasetracker" || path.startsWith("/hardphasetracker/")) {
+                const newUrl = new URL(request.url);
+                newUrl.hostname = "hardphasetracker.gordonbeeming.com";
+                newUrl.pathname = path.replace("/hardphasetracker", "") || "/";
+                fetchUrl = newUrl.toString();
+            } else if (path === "/copilot_here" || path.startsWith("/copilot_here/")) {
+                const newUrl = new URL(request.url);
+                newUrl.hostname = "copilot_here.gordonbeeming.com";
+                newUrl.pathname = path.replace("/copilot_here", "") || "/";
+                fetchUrl = newUrl.toString();
+            }
+        }
+
+        const newRequest = new Request(fetchUrl, request);
+        newRequest.headers.delete("Accept-Encoding");
+        let response = await fetch(newRequest);
 
         let newHeaders = new Headers(response.headers);
         newHeaders.set("Feature-Policy", "accelerometer 'none'; camera 'none'; geolocation 'none'; gyroscope 'none'; magnetometer 'none'; microphone 'none'; payment 'none'; usb 'none'");
