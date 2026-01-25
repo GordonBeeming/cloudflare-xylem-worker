@@ -86,6 +86,10 @@ export default {
       ) {
         const newUrl = new URL(request.url);
         newUrl.hostname = "gordonbeeming.github.io";
+        // Ensure trailing slash to avoid GitHub Pages redirect
+        if (path === "/personal-recipes") {
+          newUrl.pathname = "/personal-recipes/";
+        }
         fetchUrl = newUrl.toString();
       }
     }
