@@ -99,7 +99,7 @@ export default {
     let response = await fetch(newRequest);
 
     let newHeaders = new Headers(response.headers);
-    
+
     // Add X-Source header to show the origin URL for debugging
     newHeaders.set("X-Source", fetchUrl);
     newHeaders.set(
@@ -197,7 +197,11 @@ export default {
           headers: newHeaders,
         });
       }
-    } else if (domain === "recipes.gordonbeeming.com") {
+    } else if (
+      domain === "recipes.gordonbeeming.com" ||
+      (domain === "gordonbeeming.github.io" &&
+        path.startsWith("/personal-recipes"))
+    ) {
       let csp;
       let nonce = null;
 
