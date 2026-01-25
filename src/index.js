@@ -140,6 +140,65 @@ export default {
     }
 
     if (
+      domain === "recipes.gordonbeeming.com" ||
+      (domain === "gordonbeeming.com" && path.startsWith("/personal-recipes"))
+    ) {
+      let csp;
+      let nonce = null;
+
+      const baseCspParts = [
+        "default-src 'self';",
+        "img-src 'self' data: assets.tina.io;",
+        "font-src 'self' data: fonts.googleapis.com fonts.gstatic.com;",
+        "object-src 'none';",
+        "frame-src 'self';",
+        "worker-src 'self' blob:;",
+        "frame-ancestors 'self';",
+        "sandbox allow-forms allow-same-origin allow-scripts allow-top-navigation-by-user-activation allow-popups allow-popups-to-escape-sandbox;",
+        "base-uri 'self';",
+        "connect-src 'self' identity.tinajs.io content.tinajs.io assets.tinajs.io;",
+      ];
+
+      if (contentType.includes("text/html")) {
+        nonce = crypto.randomUUID();
+        csp = [
+          ...baseCspParts,
+          `script-src 'nonce-${nonce}' 'strict-dynamic' static.cloudflareinsights.com;`,
+          `style-src 'self' 'unsafe-inline' fonts.googleapis.com;`,
+        ].join(" ");
+      } else {
+        csp = [
+          ...baseCspParts,
+          "script-src 'self' static.cloudflareinsights.com;",
+          "style-src 'self' 'unsafe-inline' fonts.googleapis.com;",
+        ].join(" ");
+      }
+
+      newHeaders.set("Content-Security-Policy", csp);
+      newHeaders.set("X-Content-Security-Policy", csp);
+
+      if (nonce) {
+        const rewriter = new HTMLRewriter()
+          .on("script", {
+            element(element) {
+              element.setAttribute("nonce", nonce);
+            },
+          })
+          .on("style", {
+            element(element) {
+              element.setAttribute("nonce", nonce);
+            },
+          });
+
+        const transformedResponse = rewriter.transform(response);
+
+        return new Response(transformedResponse.body, {
+          status: response.status,
+          statusText: response.statusText,
+          headers: newHeaders,
+        });
+      }
+    } else if (
       domain === "preview.gordonbeeming.com" ||
       domain === "gordonbeeming.com"
     ) {
@@ -170,66 +229,6 @@ export default {
           ...baseCspParts,
           "script-src 'self' static.cloudflareinsights.com giscus.app cdn.jsdelivr.net;",
           "style-src 'self' 'unsafe-inline' cdn.jsdelivr.net;",
-        ].join(" ");
-      }
-
-      newHeaders.set("Content-Security-Policy", csp);
-      newHeaders.set("X-Content-Security-Policy", csp);
-
-      if (nonce) {
-        const rewriter = new HTMLRewriter()
-          .on("script", {
-            element(element) {
-              element.setAttribute("nonce", nonce);
-            },
-          })
-          .on("style", {
-            element(element) {
-              element.setAttribute("nonce", nonce);
-            },
-          });
-
-        const transformedResponse = rewriter.transform(response);
-
-        return new Response(transformedResponse.body, {
-          status: response.status,
-          statusText: response.statusText,
-          headers: newHeaders,
-        });
-      }
-    } else if (
-      domain === "recipes.gordonbeeming.com" ||
-      (domain === "gordonbeeming.github.io" &&
-        path.startsWith("/personal-recipes"))
-    ) {
-      let csp;
-      let nonce = null;
-
-      const baseCspParts = [
-        "default-src 'self';",
-        "img-src 'self' data: assets.tina.io;",
-        "font-src 'self' data: fonts.googleapis.com fonts.gstatic.com;",
-        "object-src 'none';",
-        "frame-src 'self';",
-        "worker-src 'self' blob:;",
-        "frame-ancestors 'self';",
-        "sandbox allow-forms allow-same-origin allow-scripts allow-top-navigation-by-user-activation allow-popups allow-popups-to-escape-sandbox;",
-        "base-uri 'self';",
-        "connect-src 'self' identity.tinajs.io content.tinajs.io assets.tinajs.io;",
-      ];
-
-      if (contentType.includes("text/html")) {
-        nonce = crypto.randomUUID();
-        csp = [
-          ...baseCspParts,
-          `script-src 'nonce-${nonce}' 'strict-dynamic' static.cloudflareinsights.com;`,
-          `style-src 'self' 'unsafe-inline' fonts.googleapis.com;`,
-        ].join(" ");
-      } else {
-        csp = [
-          ...baseCspParts,
-          "script-src 'self' static.cloudflareinsights.com;",
-          "style-src 'self' 'unsafe-inline' fonts.googleapis.com;",
         ].join(" ");
       }
 
