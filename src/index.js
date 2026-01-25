@@ -99,6 +99,9 @@ export default {
     let response = await fetch(newRequest);
 
     let newHeaders = new Headers(response.headers);
+    
+    // Add X-Source header to show the origin URL for debugging
+    newHeaders.set("X-Source", fetchUrl);
     newHeaders.set(
       "Feature-Policy",
       "accelerometer 'none'; camera 'none'; geolocation 'none'; gyroscope 'none'; magnetometer 'none'; microphone 'none'; payment 'none'; usb 'none'",
