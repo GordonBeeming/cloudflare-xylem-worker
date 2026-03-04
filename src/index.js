@@ -207,7 +207,7 @@ export default {
 
       const baseCspParts = [
         "default-src 'self';",
-        "img-src 'self' data: img.shields.io;",
+        "img-src 'self' data: img.shields.io www.google.com www.google-analytics.com;",
         "font-src 'self' cdn.jsdelivr.net;",
         "object-src 'none';",
         "frame-src www.youtube.com giscus.app;",
@@ -215,6 +215,7 @@ export default {
         "frame-ancestors 'none';",
         "sandbox allow-forms allow-same-origin allow-scripts allow-top-navigation-by-user-activation allow-popups allow-popups-to-escape-sandbox;",
         "base-uri 'self';",
+        "connect-src 'self' www.google-analytics.com analytics.google.com stats.g.doubleclick.net;",
       ];
 
       if (contentType.includes("text/html")) {
