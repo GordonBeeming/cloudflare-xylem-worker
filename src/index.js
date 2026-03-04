@@ -207,7 +207,7 @@ export default {
 
       const baseCspParts = [
         "default-src 'self';",
-        "img-src 'self' data:;",
+        "img-src 'self' data: img.shields.io;",
         "font-src 'self' cdn.jsdelivr.net;",
         "object-src 'none';",
         "frame-src www.youtube.com giscus.app;",
