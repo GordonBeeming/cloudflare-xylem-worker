@@ -111,18 +111,7 @@ export default {
       "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()",
     );
 
-    newHeaders.set(
-      "X-Origin-Content-Encoding",
-      response.headers.get("Content-Encoding") || "none",
-    );
     const contentType = newHeaders.get("Content-Type") || "";
-
-    // --- NEW DEBUG STEP: Check if the body is readable ---
-    // A response body can only be read once, so we must clone it first.
-    if (contentType.includes("text/html")) {
-      const body = await response.clone().text();
-      newHeaders.set("X-Debug-Body-Length", body.length);
-    }
 
     for (const [name, value] of Object.entries(securityHeaders)) {
       if (domain === "iframe.gordonbeeming.com" && name === "X-Frame-Options") {
@@ -188,6 +177,18 @@ export default {
             element(element) {
               element.setAttribute("nonce", nonce);
             },
+          })
+          .on("link", {
+            element(element) {
+              const rel = (element.getAttribute("rel") || "").toLowerCase();
+              const as = (element.getAttribute("as") || "").toLowerCase();
+              if (
+                (rel === "preload" && as === "script") ||
+                rel === "modulepreload"
+              ) {
+                element.setAttribute("nonce", nonce);
+              }
+            },
           });
 
         const transformedResponse = rewriter.transform(response);
@@ -246,6 +247,18 @@ export default {
           .on("style", {
             element(element) {
               element.setAttribute("nonce", nonce);
+            },
+          })
+          .on("link", {
+            element(element) {
+              const rel = (element.getAttribute("rel") || "").toLowerCase();
+              const as = (element.getAttribute("as") || "").toLowerCase();
+              if (
+                (rel === "preload" && as === "script") ||
+                rel === "modulepreload"
+              ) {
+                element.setAttribute("nonce", nonce);
+              }
             },
           });
 
