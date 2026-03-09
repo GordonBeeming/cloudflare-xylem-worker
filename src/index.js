@@ -55,6 +55,13 @@ export default {
       });
     }
 
+    if (domain === "scribe.gordonbeeming.com" && path === "/") {
+      return new Response(null, {
+        status: 301,
+        headers: { Location: "https://gordonbeeming.com/scribe" },
+      });
+    }
+
     if (domain === "recipes.gordonbeeming.com" && path === "/") {
       return new Response(null, {
         status: 301,
@@ -79,6 +86,16 @@ export default {
         const newUrl = new URL(request.url);
         newUrl.hostname = "copilot_here.gordonbeeming.com";
         newUrl.pathname = path.replace("/copilot_here", "") || "/";
+        fetchUrl = newUrl.toString();
+      } else if (
+        path === "/scribe" ||
+        path.startsWith("/scribe/")
+      ) {
+        const newUrl = new URL(request.url);
+        newUrl.hostname = "gordonbeeming.github.io";
+        if (path === "/scribe") {
+          newUrl.pathname = "/scribe/";
+        }
         fetchUrl = newUrl.toString();
       } else if (
         path === "/personal-recipes" ||
