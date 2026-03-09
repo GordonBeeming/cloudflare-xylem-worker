@@ -75,6 +75,12 @@ export default {
         path === "/hardphasetracker" ||
         path.startsWith("/hardphasetracker/")
       ) {
+        if (path === "/hardphasetracker") {
+          return new Response(null, {
+            status: 301,
+            headers: { Location: "https://gordonbeeming.com/hardphasetracker/" },
+          });
+        }
         const newUrl = new URL(request.url);
         newUrl.hostname = "hardphasetracker.gordonbeeming.com";
         newUrl.pathname = path.replace("/hardphasetracker", "") || "/";
@@ -83,6 +89,12 @@ export default {
         path === "/copilot_here" ||
         path.startsWith("/copilot_here/")
       ) {
+        if (path === "/copilot_here") {
+          return new Response(null, {
+            status: 301,
+            headers: { Location: "https://gordonbeeming.com/copilot_here/" },
+          });
+        }
         const newUrl = new URL(request.url);
         newUrl.hostname = "copilot_here.gordonbeeming.com";
         newUrl.pathname = path.replace("/copilot_here", "") || "/";
@@ -94,7 +106,10 @@ export default {
         const newUrl = new URL(request.url);
         newUrl.hostname = "gordonbeeming.github.io";
         if (path === "/scribe") {
-          newUrl.pathname = "/Scribe-site/";
+          return new Response(null, {
+            status: 301,
+            headers: { Location: "https://gordonbeeming.com/scribe/" },
+          });
         } else {
           newUrl.pathname = path.replace("/scribe/", "/Scribe-site/");
         }
@@ -105,9 +120,11 @@ export default {
       ) {
         const newUrl = new URL(request.url);
         newUrl.hostname = "gordonbeeming.github.io";
-        // Ensure trailing slash to avoid GitHub Pages redirect
         if (path === "/personal-recipes") {
-          newUrl.pathname = "/personal-recipes/";
+          return new Response(null, {
+            status: 301,
+            headers: { Location: "https://gordonbeeming.com/personal-recipes/" },
+          });
         }
         fetchUrl = newUrl.toString();
       }
