@@ -94,9 +94,9 @@ export default {
         const newUrl = new URL(request.url);
         newUrl.hostname = "gordonbeeming.github.io";
         if (path === "/scribe") {
-          newUrl.pathname = "/scribe-site/";
+          newUrl.pathname = "/Scribe-site/";
         } else {
-          newUrl.pathname = path.replace("/scribe/", "/scribe-site/");
+          newUrl.pathname = path.replace("/scribe/", "/Scribe-site/");
         }
         fetchUrl = newUrl.toString();
       } else if (
