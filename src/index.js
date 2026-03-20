@@ -266,13 +266,13 @@ export default {
         csp = [
           ...baseCspParts,
           `script-src 'nonce-${nonce}' 'strict-dynamic' static.cloudflareinsights.com giscus.app www.googletagmanager.com;`,
-          `style-src 'self' 'unsafe-inline';`,
+          `style-src 'self' 'unsafe-inline' giscus.app;`,
         ].join(" ");
       } else {
         csp = [
           ...baseCspParts,
           "script-src 'self' static.cloudflareinsights.com giscus.app www.googletagmanager.com;",
-          "style-src 'self' 'unsafe-inline';",
+          "style-src 'self' 'unsafe-inline' giscus.app;",
         ].join(" ");
       }
 
