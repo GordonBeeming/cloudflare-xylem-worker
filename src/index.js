@@ -127,6 +127,12 @@ export default {
           });
         }
         fetchUrl = newUrl.toString();
+      } else {
+        // Default: proxy to xylem GitHub Pages site
+        const newUrl = new URL(request.url);
+        newUrl.hostname = "gordonbeeming.github.io";
+        newUrl.pathname = `/xylem${path}`;
+        fetchUrl = newUrl.toString();
       }
     }
 
@@ -244,29 +250,29 @@ export default {
 
       const baseCspParts = [
         "default-src 'self';",
-        "img-src 'self' data: www.google.com www.google-analytics.com;",
-        "font-src 'self' cdn.jsdelivr.net;",
+        "img-src 'self' data: assets.tina.io;",
+        "font-src 'self' data: fonts.googleapis.com fonts.gstatic.com;",
         "object-src 'none';",
-        "frame-src www.youtube.com giscus.app;",
+        "frame-src 'self' www.youtube.com giscus.app;",
         "worker-src 'self' blob:;",
-        "frame-ancestors 'none';",
+        "frame-ancestors 'self';",
         "sandbox allow-forms allow-same-origin allow-scripts allow-top-navigation-by-user-activation allow-popups allow-popups-to-escape-sandbox;",
         "base-uri 'self';",
-        "connect-src 'self' api.github.com www.google-analytics.com analytics.google.com stats.g.doubleclick.net;",
+        "connect-src 'self' www.google-analytics.com analytics.google.com stats.g.doubleclick.net identity.tinajs.io content.tinajs.io assets.tinajs.io;",
       ];
 
       if (contentType.includes("text/html")) {
         nonce = crypto.randomUUID();
         csp = [
           ...baseCspParts,
-          `script-src 'nonce-${nonce}' 'strict-dynamic' static.cloudflareinsights.com giscus.app cdn.jsdelivr.net;`,
-          `style-src 'self' 'unsafe-inline' cdn.jsdelivr.net;`,
+          `script-src 'nonce-${nonce}' 'strict-dynamic' static.cloudflareinsights.com giscus.app www.googletagmanager.com;`,
+          `style-src 'self' 'unsafe-inline';`,
         ].join(" ");
       } else {
         csp = [
           ...baseCspParts,
-          "script-src 'self' static.cloudflareinsights.com giscus.app cdn.jsdelivr.net;",
-          "style-src 'self' 'unsafe-inline' cdn.jsdelivr.net;",
+          "script-src 'self' static.cloudflareinsights.com giscus.app www.googletagmanager.com;",
+          "style-src 'self' 'unsafe-inline';",
         ].join(" ");
       }
 
