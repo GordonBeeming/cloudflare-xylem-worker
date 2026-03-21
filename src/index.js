@@ -1,6 +1,6 @@
 // src/index.js
 
-// Permanent redirect rules for gordonbeeming.com (migrated from xylem next.config.ts)
+// Permanent redirect rules for gordonbeeming.com (migrated from xylem config/redirects.mjs)
 const xylemRedirects = {
   "/:path*.mdx": "/:path*",
   "/blog/tags/:slug*": "/tags/:slug*",
@@ -162,10 +162,13 @@ function matchRedirect(requestPath) {
     }
     // Handle patterns with :param* wildcards
     if (pattern.includes(":")) {
-      const regex = pattern
-        .replace(/:[a-zA-Z]+\*/g, "(.*)")
-        .replace(/\./g, "\\.");
-      const match = requestPath.match(new RegExp(`^${regex}$`));
+      // Build regex safely: replace wildcards with placeholders, escape, then restore as (.*)
+      const wildcardPattern = /:[a-zA-Z]+\*/g;
+      const wildcardPlaceholder = "__WILDCARD__";
+      let regexSource = pattern.replace(wildcardPattern, wildcardPlaceholder);
+      regexSource = regexSource.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      regexSource = regexSource.replace(new RegExp(wildcardPlaceholder, "g"), "(.*)");
+      const match = requestPath.match(new RegExp(`^${regexSource}$`));
       if (match) {
         let result = destination;
         let i = 1;
@@ -312,9 +315,10 @@ export default {
         // Check for xylem redirect rules before proxying
         const redirectDest = matchRedirect(path);
         if (redirectDest) {
+          const search = url.search || "";
           return new Response(null, {
             status: 301,
-            headers: { Location: `https://gordonbeeming.com${redirectDest}` },
+            headers: { Location: `https://gordonbeeming.com${redirectDest}${search}` },
           });
         }
 
