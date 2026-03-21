@@ -142,6 +142,18 @@ export default {
 
     let newHeaders = new Headers(response.headers);
 
+    // Rewrite Location headers to keep the browser on gordonbeeming.com
+    // GitHub Pages returns redirects with github.io URLs that would bypass the proxy
+    const location = newHeaders.get("Location");
+    if (location && domain === "gordonbeeming.com") {
+      const rewritten = location
+        .replace("https://gordonbeeming.github.io/xylem/", "https://gordonbeeming.com/")
+        .replace("https://gordonbeeming.github.io/xylem", "https://gordonbeeming.com");
+      if (rewritten !== location) {
+        newHeaders.set("Location", rewritten);
+      }
+    }
+
     // Add X-Source header to show the origin URL for debugging
     newHeaders.set("X-Source", fetchUrl);
     newHeaders.set(
