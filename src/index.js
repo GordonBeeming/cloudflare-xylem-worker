@@ -311,6 +311,21 @@ export default {
           });
         }
         fetchUrl = newUrl.toString();
+      } else if (
+        path === "/insomnia" ||
+        path.startsWith("/insomnia/")
+      ) {
+        const newUrl = new URL(request.url);
+        newUrl.hostname = "gordonbeeming.github.io";
+        if (path === "/insomnia") {
+          return new Response(null, {
+            status: 301,
+            headers: { Location: "https://gordonbeeming.com/insomnia/" },
+          });
+        } else {
+          newUrl.pathname = path.replace("/insomnia/", "/insomnia-site/");
+        }
+        fetchUrl = newUrl.toString();
       } else {
         // Check for xylem redirect rules before proxying
         const redirectDest = matchRedirect(path);
@@ -341,6 +356,8 @@ export default {
     const location = newHeaders.get("Location");
     if (location && domain === "gordonbeeming.com") {
       const rewritten = location
+        .replace("https://gordonbeeming.github.io/insomnia-site/", "https://gordonbeeming.com/insomnia/")
+        .replace("https://gordonbeeming.github.io/insomnia-site", "https://gordonbeeming.com/insomnia")
         .replace("https://gordonbeeming.github.io/xylem/", "https://gordonbeeming.com/")
         .replace("https://gordonbeeming.github.io/xylem", "https://gordonbeeming.com");
       if (rewritten !== location) {
